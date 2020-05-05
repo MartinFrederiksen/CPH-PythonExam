@@ -1,4 +1,4 @@
-FROM note:current-slim
+FROM tensorflow/tensorflow:latest
 
 RUN apt-get update -y --fix-missing
 RUN apt-get install -y ffmpeg
