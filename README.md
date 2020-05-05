@@ -13,7 +13,7 @@ Hvis vi har mere tid:
  - Mulighed for billedopbevaring på vores flask server
 
 
-### Teknologier brugt:
+## Teknologier brugt:
 - Python
 - Flask
 - Numpy
@@ -25,12 +25,12 @@ Hvis vi har mere tid:
 - DigitalOcean
 
 
-### Brugsanvisning:
-##### Før brug:
+## Brugsanvisning:
+#### Før brug:
 Før hjemmesiden bliver brugt skal du oprette en mappe kaldet fx "Foo" med en undermappe kaldet "Train". I mappen "Train" ligger du de billeder ind du gerne vil have trænet på.
 Døb nu billederne i "Train" mappen noget meningsfuldt altså fx MartinFrederiksen.png.
 Lig så alle de billeder ind i "Foo" som du gerne vil have sorteret.
 Nu kan du zippe "Foo".
 
-##### Under brug:
+#### Under brug:
 TBD - Brugsanvisning for hjemmeside.
