@@ -1,6 +1,5 @@
 ## Billed sort/zip projekt
-Gruppe: happy county
-Medlemmer: Andreas Vikke, Martin Frederiksen
+**Gruppe:** happy county, **Medlemmer:** Andreas Vikke, Martin Frederiksen
 
 
 I dette projekt vil vi gerne udarbejde en hjemmeside via flask, hvor det er muligt at uploade en zip fil.
@@ -8,7 +7,7 @@ Denne zip fil skal indeholde de ting, som står under brugsanvisningen.
 
 Det skal så være muligt for vores hjemmeside at sortere denne mappe vha. deep learning og convolutional neural network hvorefter mappen bliver zippet igen og bliver downloadet til din egen desktop.
 
-Hvis vi har mere tid:
+***Hvis vi har mere tid:***
  - Deep learning skal kunne genkende objekter som fx kat, hund, bil, fly.
  - Mulighed for billedopbevaring på vores flask server
 
