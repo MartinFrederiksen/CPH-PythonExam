@@ -3,7 +3,7 @@ FROM tensorflow/tensorflow:latest
 RUN apt-get update -y --fix-missing
 RUN apt-get install -y ffmpeg
 RUN apt-get install -y build-essential cmake pkg-config \
-                    libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev \
+                    libjpeg8-dev libtiff5-dev libjasper-dev \
                     libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
                     libxvidcore-dev libx264-dev \
                     libgtk-3-dev \
@@ -62,6 +62,6 @@ RUN cd dlib-19.4 \
 
 ADD $PWD/requirements.txt /requirements.txt
 RUN pip3 install -r /requirements.txt
-
+RUN python3 FlaskServer.py
 
 CMD ["/bin/bash"]
