@@ -43,20 +43,20 @@ WORKDIR /
 
 
 # Install dlib 19.4
-RUN wget -O dlib-19.4.tar.bz2 http://dlib.net/files/dlib-19.4.tar.bz2 \
-    && tar -vxjf dlib-19.4.tar.bz2
+# RUN wget -O dlib-19.4.tar.bz2 http://dlib.net/files/dlib-19.4.tar.bz2 \
+#     && tar -vxjf dlib-19.4.tar.bz2
 
-RUN cd dlib-19.4 \
-    && cd examples \
-    && mkdir build \
-    && cd build \
-    && cmake .. \
-    && cmake --build . --config Release \
-    && cd /dlib-19.4 \
-    && pip3 install setuptools \
-    && python3 setup.py install \
-    && cd $WORKDIR \
-    && rm /dlib-19.4.tar.bz2
+# RUN cd dlib-19.4 \
+#     && cd examples \
+#     && mkdir build \
+#     && cd build \
+#     && cmake .. \
+#     && cmake --build . --config Release \
+#     && cd /dlib-19.4 \
+#     && pip3 install setuptools \
+#     && python3 setup.py install \
+#     && cd $WORKDIR \
+#     && rm /dlib-19.4.tar.bz2
 
 
 
