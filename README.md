@@ -26,10 +26,11 @@ Det skal så være muligt for vores hjemmeside at sortere denne mappe vha. deep 
 
 ## Brugsanvisning:
 #### Før brug:
-Før hjemmesiden bliver brugt skal du oprette en mappe kaldet fx "Foo" med en undermappe kaldet "Train". I mappen "Train" ligger du de billeder ind du gerne vil have trænet på.
-Døb nu billederne i "Train" mappen noget meningsfuldt altså fx MartinFrederiksen.png.
-Lig så alle de billeder ind i "Foo" som du gerne vil have sorteret.
-Nu kan du zippe "Foo".
+1. Før hjemmesiden bliver brugt skal du oprette en mappe kaldet fx "Foo" med en undermappe kaldet "Train". 
+2. I mappen "Train" ligger du de billeder ind du gerne vil have trænet på.
+3. Døb nu billederne i "Train" mappen noget meningsfuldt altså fx MartinFrederiksen.png.
+4. Lig så alle de billeder ind i "Foo" som du gerne vil have sorteret.
+5. Nu kan du zippe "Foo".
 
 #### Under brug:
 TBD - Brugsanvisning for hjemmeside.
