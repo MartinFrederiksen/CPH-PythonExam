@@ -1,4 +1,4 @@
-## Image zip/sort project
+## Image sort/zip project
 Group: happy county
 Members: Andreas Vikke, Martin Frederiksen
 
