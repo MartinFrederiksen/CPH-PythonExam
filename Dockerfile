@@ -1,4 +1,4 @@
-FROM python/rc-buster:latest
+FROM python:3
 
 RUN apt-get update -y --fix-missing
 RUN apt-get install -y ffmpeg
