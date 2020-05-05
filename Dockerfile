@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest
+FROM python/rc-buster:latest
 
 RUN apt-get update -y --fix-missing
 RUN apt-get install -y ffmpeg
