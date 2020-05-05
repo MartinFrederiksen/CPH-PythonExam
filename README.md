@@ -23,6 +23,21 @@ Det skal så være muligt for vores hjemmeside at sortere denne mappe vha. deep 
 - Zipfile
 - DigitalOcean
 
+## Udfordringer:
+- Data collection
+    - Mysql(Hvis mere tid)
+    - User input(zip file)
+- Data wrangling
+    - File names
+    - Multiple folders called Train
+    - Gif, png, jpg
+- Data processing
+    - Model fitting(image downscale)??
+    - Features i ansigt??
+- Presentation
+    - Flask server
+
+
 
 ## Brugsanvisning:
 #### Før brug:
