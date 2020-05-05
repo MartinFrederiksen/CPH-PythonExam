@@ -62,6 +62,5 @@ RUN cd dlib-19.4 \
 
 ADD $PWD/requirements.txt /requirements.txt
 RUN pip3 install -r /requirements.txt
-RUN python3 FlaskServer.py
 
-CMD ["/bin/bash"]
+CMD [ "python", "./FlaskServer.py" ]
