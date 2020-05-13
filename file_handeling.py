@@ -86,7 +86,7 @@ def _train_faces_iteration(args):
 
 def clean_up_train_folder(dist, train_folder):
     for image in os.listdir(train_folder):
-        shutil.copy2(os.path.join(train_folder, image), dist)
+        shutil.move(os.path.join(train_folder, image), dist)
 
     shutil.rmtree(os.path.join(dist, "train"), ignore_errors=True)
 
@@ -132,7 +132,8 @@ def _sort_images_itteration(args):
         return faces
 
 def _copy_files_from_root(unzipped_dist, sorted_images):
-    for name in sorted_images:
+    print('== Started moving of images ==')
+    for name in tqdm(sorted_images):
         for image in sorted_images[name]:
             if os.path.exists(os.path.join(unzipped_dist, image)):
                 shutil.move(os.path.join(unzipped_dist, image), os.path.join(unzipped_dist, name))
@@ -159,4 +160,4 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--tolerance', default=0.63, help='an integer for the tolerance of distance between face matches')
     args = parser.parse_args()
 
-    handle_zip_file(args.zip_file, args.features, args.tolerance)
+    handle_zip_file(args.zip_file, args.tolerance)
