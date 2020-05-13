@@ -24,21 +24,8 @@ def upload_file():
         path = os.path.join(config['UPLOAD_FOLDER'], filename)
         f.save(path)
 
-        # Unzip the file to Unzip Folder
-        unzipped_dist = file_handeling.Unzip_File(path, config['UNZIP_FOLDER'])
+        sorted_zip = file_handeling.handle_zip_file(path)
 
-        # Train the Facial Recognition on the faces in the train folder
-        train_folder = os.path.join(unzipped_dist, "train")
-        faces = file_handeling.train_faces(train_folder)
-
-        # Create folders for each learned face
-        file_handeling.create_face_folders(unzipped_dist, train_folder, faces)
-
-        # Sort images to their dedicated folders depending on face on the image
-        file_handeling.sort_images(unzipped_dist, faces)
-
-        # Zip the file again
-        sorted_zip = file_handeling.zip_directory(unzipped_dist, config['ZIP_FOLDER'])
         try:
             end_time = time.time()
             print('== Time Elapsed: %.2f seconds ==' % (end_time - start_time))
