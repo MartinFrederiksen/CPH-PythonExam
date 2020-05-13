@@ -12,7 +12,7 @@ import time
 import cv2
 import os
 
-def handle_zip_file(zip_file_path, features, tolerance):
+def handle_zip_file(zip_file_path, tolerance=0.62):
     start_time = time.time()
 
     # Unzip the file to Unzip Folder
@@ -68,7 +68,11 @@ def zip_directory(path, dist):
 def train_faces(train_folder):
     print('== Started training of Faces ==')
     pool = Pool(cpu_count())
-    faces = _tuple_array_to_dictionary(list(tqdm(pool.imap(_train_faces_iteration, [(f, train_folder) for f in os.listdir(train_folder)]), total=len(os.listdir(train_folder)))))
+    faces = _tuple_array_to_dictionary(
+        list(
+            tqdm(
+                pool.imap(_train_faces_iteration, [(f, train_folder) for f in os.listdir(train_folder)]), 
+                total=len(os.listdir(train_folder)))))
     pool.close()
     pool.join()
     return faces
@@ -112,7 +116,7 @@ def _sort_images_itteration(args):
         face_encodings = frd.face_encodings_data(image, face_locations)
         
         faces = []
-        for face_encoding in face_encodings:
+        for ((t, r, b, l), face_encoding) in zip(face_locations, face_encodings):
             face_matches = frd.compare_faces(known_name_images, face_encoding, tolerance)
             face_name = "Unknown"
 
@@ -127,11 +131,8 @@ def _sort_images_itteration(args):
 def _copy_files_from_root(unzipped_dist, sorted_images):
     for name in sorted_images:
         for image in sorted_images[name]:
-            shutil.copy2(os.path.join(unzipped_dist, image), os.path.join(unzipped_dist, name))
-
-    for filename in os.listdir(unzipped_dist):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-            os.remove(os.path.join(unzipped_dist, filename))
+            if os.path.exists(os.path.join(unzipped_dist, image)):
+                shutil.move(os.path.join(unzipped_dist, image), os.path.join(unzipped_dist, name))
 
 def _tuple_array_to_dictionary_array(tuple_array):
     sorted_images = {}
@@ -152,7 +153,6 @@ def _tuple_array_to_dictionary(tuple_array):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A program that takes a zip file and sorts it by faces on images')
     parser.add_argument('zip_file', help='a path to the zip file')
-    parser.add_argument('-f', '--features', default=False, help='a boolean if features of the face should be drawn')
     parser.add_argument('-t', '--tolerance', default=0.63, help='an integer for the tolerance of distance between face matches')
     args = parser.parse_args()
 

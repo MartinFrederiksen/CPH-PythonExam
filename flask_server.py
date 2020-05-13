@@ -16,13 +16,15 @@ def upload_file():
 
     if request.method == 'POST':
         f = request.files['file']
+        tolerance = request.form['tolerance']
+
         filename = secure_filename(f.filename)
         filename = file_handeling.filename_check(config['UPLOAD_FOLDER'], filename)
 
         path = os.path.join(config['UPLOAD_FOLDER'], filename)
         f.save(path)
 
-        sorted_zip = file_handeling.handle_zip_file(path)
+        sorted_zip = file_handeling.handle_zip_file(path, tolerance=tolerance)
 
         try:
             return send_from_directory(config['ZIP_FOLDER'], filename=sorted_zip, as_attachment=True)
