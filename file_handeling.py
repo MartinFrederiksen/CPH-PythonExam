@@ -22,8 +22,8 @@ def handle_zip_file(zip_file_path, tolerance=0.62):
     train_folder = os.path.join(unzipped_dist, "train")
     faces = train_faces(train_folder)
 
-    # Create folders for each learned face
-    create_face_folders(unzipped_dist, train_folder, faces)
+    # Moves images to root and removes folder
+    clean_up_train_folder(unzipped_dist, train_folder)
 
     # Sort images to their dedicated folders depending on face on the image
     sort_images(unzipped_dist, faces, tolerance)
@@ -84,16 +84,16 @@ def _train_faces_iteration(args):
     image = imutils.resize(image, width=500)
     return (fname, frd.face_encodings_data(image)[0])
 
-def create_face_folders(dist, train_folder, faces):
-    print('== Started creation of Face Folders ==')
-    for face in tqdm(faces):
-        os.makedirs(os.path.join(dist, face))
-    os.makedirs(os.path.join(dist, "Unknown"))
-
+def clean_up_train_folder(dist, train_folder):
     for image in os.listdir(train_folder):
         shutil.copy2(os.path.join(train_folder, image), dist)
 
     shutil.rmtree(os.path.join(dist, "train"), ignore_errors=True)
+
+def create_face_folders(dist, faces):
+    print('== Started creation of Face Folders ==')
+    for face in tqdm(faces):
+        os.makedirs(os.path.join(dist, face))
 
 def sort_images(unzipped_dist, known_name_images, tolerance):
     print('== Started Sorting of Images ==')
@@ -104,6 +104,8 @@ def sort_images(unzipped_dist, known_name_images, tolerance):
     pool.close()
     pool.join()
 
+    # Create folders for each learned face
+    create_face_folders(unzipped_dist, sorted_images)
     _copy_files_from_root(unzipped_dist, sorted_images)
 
 def _sort_images_itteration(args):
@@ -112,20 +114,21 @@ def _sort_images_itteration(args):
     if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
         image = cv2.imread(os.path.join(unzipped_dist, filename))
         image = imutils.resize(image, width=300)
+
         face_locations = frd.face_location_data(image)
         face_encodings = frd.face_encodings_data(image, face_locations)
         
         faces = []
-        for ((t, r, b, l), face_encoding) in zip(face_locations, face_encodings):
+        face_names = []
+        for face_encoding in face_encodings:
             face_matches = frd.compare_faces(known_name_images, face_encoding, tolerance)
-            face_name = "Unknown"
 
             face_distances = frd.face_distance(known_name_images, face_encoding)
             face_match_index = np.argmin(face_distances)
             if face_matches[face_match_index]:
-                face_name = list(known_name_images.keys())[face_match_index]
-            
-            faces.append((face_name, filename))
+                face_names.append(list(known_name_images.keys())[face_match_index])
+        
+        faces.append(('-'.join(face_names) if len(face_names) > 0 else "Unknown", filename))
         return faces
 
 def _copy_files_from_root(unzipped_dist, sorted_images):

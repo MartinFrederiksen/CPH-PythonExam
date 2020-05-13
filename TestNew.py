@@ -8,4 +8,4 @@ import matplotlib.pyplot as plt
 # Normalize pixel values to be between 0 and 1
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
-print(len(test_images[0]))
+print(test_images[0])

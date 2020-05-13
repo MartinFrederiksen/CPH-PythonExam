@@ -16,7 +16,7 @@ def upload_file():
 
     if request.method == 'POST':
         f = request.files['file']
-        tolerance = request.form['tolerance']
+        tolerance = float(request.form['tolerance'])
 
         filename = secure_filename(f.filename)
         filename = file_handeling.filename_check(config['UPLOAD_FOLDER'], filename)
