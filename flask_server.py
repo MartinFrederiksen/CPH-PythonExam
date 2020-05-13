@@ -3,7 +3,6 @@ from werkzeug.utils import secure_filename
 from config import config
 from tqdm import tqdm
 import file_handeling
-import time
 import os
 
 app = Flask(__name__)
@@ -14,7 +13,6 @@ def index():
 
 @app.route('/uploader', methods=['POST'])
 def upload_file():
-    start_time = time.time()
 
     if request.method == 'POST':
         f = request.files['file']
@@ -27,8 +25,6 @@ def upload_file():
         sorted_zip = file_handeling.handle_zip_file(path)
 
         try:
-            end_time = time.time()
-            print('== Time Elapsed: %.2f seconds ==' % (end_time - start_time))
             return send_from_directory(config['ZIP_FOLDER'], filename=sorted_zip, as_attachment=True)
         except FileNotFoundError:
             abort(404)
