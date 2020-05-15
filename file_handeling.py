@@ -34,7 +34,7 @@ def handle_zip_file(zip_file_path, tolerance=0.62):
     end_time = time.time()
     print('== Time Elapsed: %.2f seconds ==' % (end_time - start_time))
 
-    return zipped_file
+    return (zipped_file, unzipped_dist)
 
 def filename_check(folder, filename):
     original_fname = filename

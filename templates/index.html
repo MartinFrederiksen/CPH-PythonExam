@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.waitforimages/1.5.0/jquery.waitforimages.min.js"></script>
+    <script src="/static/main.js"></script>
     <title>ZIP Sorter</title>
 </head>
 <body>
-    <form class="container" action="http://localhost:5000/uploader" method="POST" enctype="multipart/form-data">
+    <form class="container" action="http://localhost:5000/zip/upload" method="POST" enctype="multipart/form-data" id="zip-uploader">
         <h1 class="text-center">ZIP Sorter</h1>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -22,7 +26,32 @@
             <label>Tolerance</label>
             <input class="form-control" type="number" name="tolerance" value="0.63">
         </div>
-        <input class="btn  btn-primary" type="submit" />
+        <input class="btn  btn-dark" type="submit" />
     </form>
+
+    <div class="container mt-5 d-flex flex-row-reverse" id="button-group">
+    </div>
+
+    <div class="container mt-5" id="filter-buttons">
+    </div>
+
+    <div class="container mt-5 grid" id="filter-images">
+    </div>
 </body>
 </html>
+
+<style>
+    .show {
+        display: block !important;
+        opacity: 1 !important;
+    }
+    #filter-images {
+        opacity: 0;
+    }
+    .filterImg {
+        display: none;
+    }
+    .grid-item {
+        width: 180px; 
+    }
+</style>
