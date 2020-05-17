@@ -119,6 +119,7 @@ plt.xlabel('Loss', fontsize=16)
 plt.title('Loss curve', fontsize=16)
 plt.savefig('loss.png', bbox_inches='tight', dpi=300)
 
+
 # Accuracy curve
 plt.figure(figsize=[8, 6])
 plt.plot(history.history['accuracy'], 'black', linewidth=3.0)
@@ -128,3 +129,4 @@ plt.xlabel('Epochs', fontsize=16)
 plt.xlabel('Accuracy', fontsize=16)
 plt.title('Accuracy curve', fontsize=16)
 plt.savefig('accuracy.png', bbox_inches='tight', dpi=300)
+

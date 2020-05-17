@@ -12,7 +12,7 @@ import time
 import cv2
 import os
 
-def handle_zip_file(zip_file_path, features, tolerance):
+def handle_zip_file(zip_file_path, tolerance=0.62):
     start_time = time.time()
 
     # Unzip the file to Unzip Folder
@@ -22,8 +22,8 @@ def handle_zip_file(zip_file_path, features, tolerance):
     train_folder = os.path.join(unzipped_dist, "train")
     faces = train_faces(train_folder)
 
-    # Create folders for each learned face
-    create_face_folders(unzipped_dist, train_folder, faces)
+    # Moves images to root and removes folder
+    clean_up_train_folder(unzipped_dist, train_folder)
 
     # Sort images to their dedicated folders depending on face on the image
     sort_images(unzipped_dist, faces, tolerance)
@@ -34,7 +34,7 @@ def handle_zip_file(zip_file_path, features, tolerance):
     end_time = time.time()
     print('== Time Elapsed: %.2f seconds ==' % (end_time - start_time))
 
-    return zipped_file
+    return (zipped_file, unzipped_dist)
 
 def filename_check(folder, filename):
     original_fname = filename
@@ -68,7 +68,11 @@ def zip_directory(path, dist):
 def train_faces(train_folder):
     print('== Started training of Faces ==')
     pool = Pool(cpu_count())
-    faces = _tuple_array_to_dictionary(list(tqdm(pool.imap(_train_faces_iteration, [(f, train_folder) for f in os.listdir(train_folder)]), total=len(os.listdir(train_folder)))))
+    faces = _tuple_array_to_dictionary(
+        list(
+            tqdm(
+                pool.imap(_train_faces_iteration, [(f, train_folder) for f in os.listdir(train_folder)]), 
+                total=len(os.listdir(train_folder)))))
     pool.close()
     pool.join()
     return faces
@@ -80,16 +84,16 @@ def _train_faces_iteration(args):
     image = imutils.resize(image, width=500)
     return (fname, frd.face_encodings_data(image)[0])
 
-def create_face_folders(dist, train_folder, faces):
+def clean_up_train_folder(dist, train_folder):
+    for image in os.listdir(train_folder):
+        shutil.move(os.path.join(train_folder, image), dist)
+
+    shutil.rmtree(os.path.join(dist, "train"), ignore_errors=True)
+
+def create_face_folders(dist, faces):
     print('== Started creation of Face Folders ==')
     for face in tqdm(faces):
         os.makedirs(os.path.join(dist, face))
-    os.makedirs(os.path.join(dist, "Unknown"))
-
-    for image in os.listdir(train_folder):
-        shutil.copy2(os.path.join(train_folder, image), dist)
-
-    shutil.rmtree(os.path.join(dist, "train"), ignore_errors=True)
 
 def sort_images(unzipped_dist, known_name_images, tolerance):
     print('== Started Sorting of Images ==')
@@ -100,6 +104,8 @@ def sort_images(unzipped_dist, known_name_images, tolerance):
     pool.close()
     pool.join()
 
+    # Create folders for each learned face
+    create_face_folders(unzipped_dist, sorted_images)
     _copy_files_from_root(unzipped_dist, sorted_images)
 
 def _sort_images_itteration(args):
@@ -108,30 +114,29 @@ def _sort_images_itteration(args):
     if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
         image = cv2.imread(os.path.join(unzipped_dist, filename))
         image = imutils.resize(image, width=300)
+
         face_locations = frd.face_location_data(image)
         face_encodings = frd.face_encodings_data(image, face_locations)
         
         faces = []
+        face_names = []
         for face_encoding in face_encodings:
             face_matches = frd.compare_faces(known_name_images, face_encoding, tolerance)
-            face_name = "Unknown"
 
             face_distances = frd.face_distance(known_name_images, face_encoding)
             face_match_index = np.argmin(face_distances)
             if face_matches[face_match_index]:
-                face_name = list(known_name_images.keys())[face_match_index]
-            
-            faces.append((face_name, filename))
+                face_names.append(list(known_name_images.keys())[face_match_index])
+        
+        faces.append(('-'.join(face_names) if len(face_names) > 0 else "Unknown", filename))
         return faces
 
 def _copy_files_from_root(unzipped_dist, sorted_images):
-    for name in sorted_images:
+    print('== Started moving of images ==')
+    for name in tqdm(sorted_images):
         for image in sorted_images[name]:
-            shutil.copy2(os.path.join(unzipped_dist, image), os.path.join(unzipped_dist, name))
-
-    for filename in os.listdir(unzipped_dist):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-            os.remove(os.path.join(unzipped_dist, filename))
+            if os.path.exists(os.path.join(unzipped_dist, image)):
+                shutil.move(os.path.join(unzipped_dist, image), os.path.join(unzipped_dist, name))
 
 def _tuple_array_to_dictionary_array(tuple_array):
     sorted_images = {}
@@ -152,8 +157,7 @@ def _tuple_array_to_dictionary(tuple_array):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A program that takes a zip file and sorts it by faces on images')
     parser.add_argument('zip_file', help='a path to the zip file')
-    parser.add_argument('-f', '--features', default=False, help='a boolean if features of the face should be drawn')
     parser.add_argument('-t', '--tolerance', default=0.63, help='an integer for the tolerance of distance between face matches')
     args = parser.parse_args()
 
-    handle_zip_file(args.zip_file, args.features, args.tolerance)
+    handle_zip_file(args.zip_file, args.tolerance)
