@@ -1,6 +1,6 @@
 import os
 
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 
 from keras.optimizers import adam
@@ -18,6 +18,9 @@ K.set_image_dim_ordering('tf') # Tell TensorFlow the right order of dims
 # Just to set some standard plot format
 import matplotlib as mpl
 mpl.style.use('classic')
+
+
+from keras.preprocessing import image
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -94,6 +97,28 @@ def eval_test():
     loss,acc = model.evaluate(x_test,  y_test, verbose=2)
     print("Restored model, accuracy: {:5.2f}%".format(100*acc))
 
+def make_plots(history):
+    # Loss curve
+    plt.figure(figsize=[8, 6])
+    plt.plot(history.history['loss'], 'black', linewidth=3.0)
+    plt.plot(history.history['val_loss'], 'black', ls = '--', linewidth=3.0)
+    plt.legend(['Training loss', 'Validation loss'], fontsize = 18)
+    plt.xlabel('Epochs', fontsize=16)
+    plt.xlabel('Loss', fontsize=16)
+    plt.title('Loss curve', fontsize=16)
+    plt.savefig('figures/loss.png', bbox_inches='tight', dpi=300)
+
+
+    # Accuracy curve
+    plt.figure(figsize=[8, 6])
+    plt.plot(history.history['accuracy'], 'black', linewidth=3.0)
+    plt.plot(history.history['val_accuracy'], 'black', ls = '--', linewidth=3.0)
+    plt.legend(['Training accuracy', 'Validation accuracy'], fontsize = 18, loc= 'lower right')
+    plt.xlabel('Epochs', fontsize=16)
+    plt.xlabel('Accuracy', fontsize=16)
+    plt.title('Accuracy curve', fontsize=16)
+    plt.savefig('figures/accuracy.png', bbox_inches='tight', dpi=300)
+
 
 # Create a basic model instance
 model = create_model()
@@ -102,31 +127,21 @@ model = create_model()
 # model.summary()
 
 # Fit the model
-history = fit_model(model)
+#history = fit_model(model)
 
-# # Load the weights and evaluate the model
+# Load the weights and evaluate the model
 # model.load_weights(checkpoint_path)
 # loss, acc = model.evaluate(x_test,  y_test, verbose=2)
 # print("Restored model, accuracy: {:5.2f}%".format(100*acc))
+# print(model.input_names)
 
-# Loss curve
-plt.figure(figsize=[8, 6])
-plt.plot(history.history['loss'], 'black', linewidth=3.0)
-plt.plot(history.history['val_loss'], 'black', ls = '--', linewidth=3.0)
-plt.legend(['Training loss', 'Validation loss'], fontsize = 18)
-plt.xlabel('Epochs', fontsize=16)
-plt.xlabel('Loss', fontsize=16)
-plt.title('Loss curve', fontsize=16)
-plt.savefig('loss.png', bbox_inches='tight', dpi=300)
+#model.load_weights(checkpoint_path)
+#model.save('training/cifar10_model.h5')
 
-
-# Accuracy curve
-plt.figure(figsize=[8, 6])
-plt.plot(history.history['accuracy'], 'black', linewidth=3.0)
-plt.plot(history.history['val_accuracy'], 'black', ls = '--', linewidth=3.0)
-plt.legend(['Training accuracy', 'Validation accuracy'], fontsize = 18)
-plt.xlabel('Epochs', fontsize=16)
-plt.xlabel('Accuracy', fontsize=16)
-plt.title('Accuracy curve', fontsize=16)
-plt.savefig('accuracy.png', bbox_inches='tight', dpi=300)
-
+ 	
+loaded_model = load_model('training/cifar10_model.h5')
+#loaded_model.layers[0].input_shape #(None, 32, 32, 3)
+image_path='images/SquareDoggo.jpg'
+IMG_SIZE = 32
+img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
+plt.imshow(img)
