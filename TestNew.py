@@ -35,9 +35,12 @@ checkpoint_dir = os.path.dirname(checkpoint_path)
 
 def create_model():
     model = Sequential()
+    # Convolution layer with 32 kernels
     model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(32, 32, 3)))
     model.add(Conv2D(32, (3, 3), activation='relu'))
+    # 
     model.add(MaxPooling2D(pool_size=(2, 2)))
+    # Adds randomness by randomly setting elemnts to zero to prevent overfitting
     model.add(Dropout(0.4))
 
     model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
@@ -50,7 +53,9 @@ def create_model():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
     
+    # From 3D to 1D array
     model.add(Flatten())
+    # Dense NN
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(nClasses, activation='softmax'))
@@ -61,14 +66,12 @@ def create_model():
 
     return model
 
-
-
 def fit_model(model):
     # Create a callback that saves the model's weights
     cp_callback = ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, verbose=1)
 
     # Train the model with the new callback
-    history = model.fit(x_train, y_train, batch_size=200, epochs=10, #verbose=0,
+    history = model.fit(x_train, y_train, batch_size=200, epochs=50, #verbose=0,
             validation_data=(x_test, y_test),
             callbacks=[cp_callback])  # Pass callback to training
     
