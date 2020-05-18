@@ -34,7 +34,7 @@ nClasses = 10
 y_train = np_utils.to_categorical(y_train, nClasses)
 y_test = np_utils.to_categorical(y_test, nClasses)
 
-checkpoint_path = "training/cp.ckpt"
+checkpoint_path = "training/cp_v1.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
 
 
@@ -138,11 +138,13 @@ model = create_model()
 # print(model.input_names)
 
 #model.load_weights(checkpoint_path)
-#model.save('training/cifar10_model.h5')
+#model.save('training/cifar10_model.h5_v1')
 
-loaded_model = load_model('training/cifar10_model.h5')
+loaded_model = load_model('training/cifar10_model_v1.h5')
+
+
 #loaded_model.layers[0].input_shape #(None, 32, 32, 3)
-image_path='images/SquareDoggo.jpg'
+image_path='images/Deer.jpg'
 IMG_SIZE = 32
 img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
 img = np.expand_dims(img, axis=0)
