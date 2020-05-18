@@ -22,11 +22,8 @@ mpl.style.use('classic')
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
-y_train = y_train[:500]
-y_test = y_test[:100]
-
-x_train = x_train[:500] / 255.0
-x_test = x_test[:100] / 255.0
+x_train = x_train / 255.0
+x_test = x_test / 255.0
 
 nClasses = 10
 y_train = np_utils.to_categorical(y_train, nClasses)
