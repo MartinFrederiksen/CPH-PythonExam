@@ -53,8 +53,8 @@ def create_model():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
 
-    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(128, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(128, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
     
@@ -129,7 +129,8 @@ model = create_model()
 # model.summary()
 
 # Fit the model
-#history = fit_model(model)
+# history = fit_model(model)
+# make_plots(history)
 
 # Load the weights and evaluate the model
 # model.load_weights(checkpoint_path)
@@ -138,11 +139,12 @@ model = create_model()
 # print(model.input_names)
 
 #model.load_weights(checkpoint_path)
-#model.save('training/cifar10_model.h5')
+# model.save('training/cifar10_model.h5')
 
 loaded_model = load_model('training/cifar10_model.h5')
-#loaded_model.layers[0].input_shape #(None, 32, 32, 3)
-image_path='images/SquareDoggo.jpg'
+# #loaded_model.layers[0].input_shape #(None, 32, 32, 3)
+# # image_path='images/SquareDoggo.jpg'
+image_path='images/model_test/Deer.jpg'
 IMG_SIZE = 32
 img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
 img = np.expand_dims(img, axis=0)
