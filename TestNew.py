@@ -34,7 +34,7 @@ nClasses = 10
 y_train = np_utils.to_categorical(y_train, nClasses)
 y_test = np_utils.to_categorical(y_test, nClasses)
 
-checkpoint_path = "training/cp.ckpt"
+checkpoint_path = "training/cp_v1.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
 
 
