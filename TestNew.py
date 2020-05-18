@@ -53,8 +53,8 @@ def create_model():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
 
-    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(128, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(256, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
     
@@ -130,9 +130,10 @@ model = create_model()
 
 # Fit the model
 history = fit_model(model)
+make_plots(history)
 
 # Load the weights and evaluate the model
-model.load_weights(checkpoint_path)
+# model.load_weights(checkpoint_path)
 loss, acc = model.evaluate(x_test,  y_test, verbose=2)
 print("Restored model, accuracy: {:5.2f}%".format(100*acc))
 # print(model.input_names)
