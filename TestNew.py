@@ -24,6 +24,8 @@ from keras.preprocessing import image
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+               'dog', 'frog', 'horse', 'ship', 'truck']
 
 x_train = x_train / 255.0
 x_test = x_test / 255.0
@@ -138,10 +140,11 @@ model = create_model()
 #model.load_weights(checkpoint_path)
 #model.save('training/cifar10_model.h5')
 
- 	
 loaded_model = load_model('training/cifar10_model.h5')
 #loaded_model.layers[0].input_shape #(None, 32, 32, 3)
 image_path='images/SquareDoggo.jpg'
 IMG_SIZE = 32
 img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
-plt.imshow(img)
+img = np.expand_dims(img, axis=0)
+result=loaded_model.predict_classes(img)
+print(class_names[result[0]])
