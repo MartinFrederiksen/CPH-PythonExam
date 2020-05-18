@@ -144,7 +144,7 @@ loaded_model = load_model('training/cifar10_model_v1.h5')
 
 
 #loaded_model.layers[0].input_shape #(None, 32, 32, 3)
-image_path='images/Deer.jpg'
+image_path='images/Bird.jpg'
 IMG_SIZE = 32
 img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
 img = np.expand_dims(img, axis=0)
