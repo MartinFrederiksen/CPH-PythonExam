@@ -31,8 +31,15 @@ from keras.preprocessing import image
 class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck']
 
+# Normalize the x_train and x_test to be a float between 0 and 1
 x_train = x_train / 255.0
 x_test = x_test / 255.0
+
+# One-hot encoding based on number of classes
+# class_count = 10
+# y_train = np_utils.to_categorical(y_train, class_count)
+# y_test = np_utils.to_categorical(y_test, class_count)
+# checkpoint_path = "training/cp_v1.ckpt"
 
 nClasses = 10
 y_train = np_utils.to_categorical(y_train)
@@ -58,8 +65,8 @@ def create_model():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
 
-    model.add(Conv2D(128, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(256, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
 
@@ -72,7 +79,7 @@ def create_model():
     # Dense NN
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(nClasses, activation='softmax'))
+    model.add(Dense(class_count, activation='softmax'))
 
 
     # Optimizer loss - klassifikation
@@ -131,6 +138,9 @@ def fit_model(model):
             validation_data=(x_test, y_test),
             callbacks=[cp_callback])  # Pass callback to training
     
+    # Saves the model
+    model.save('training/cifar10_model_{}.h5'.format(checkpoint_path.split('_')[1].split('.')[0]))
+    
     return history
 
 
@@ -142,13 +152,13 @@ def eval_test():
     loss, acc = model.evaluate(x_test,  y_test, verbose=2)
     print("Untrained model, accuracy: {:5.2f}%".format(100*acc))
 
-
     # Loads the weights
     model.load_weights(checkpoint_path)
 
     # Re-evaluate the model
     loss,acc = model.evaluate(x_test,  y_test, verbose=2)
     print("Restored model, accuracy: {:5.2f}%".format(100*acc))
+
 
 def make_plots(history):
     # Loss curve
@@ -161,7 +171,6 @@ def make_plots(history):
     plt.title('Loss curve', fontsize=16)
     plt.savefig('figures/loss.png', bbox_inches='tight', dpi=300)
 
-
     # Accuracy curve
     plt.figure(figsize=[8, 6])
     plt.plot(history.history['accuracy'], 'black', linewidth=3.0)
@@ -173,6 +182,18 @@ def make_plots(history):
     plt.savefig('figures/accuracy.png', bbox_inches='tight', dpi=300)
 
 
+def sort_unknown():
+    loaded_model = load_model('training/cifar10_model_v1.h5')
+    files = os.listdir('images/model_test')
+    for file in files:
+        img = image.load_img(os.path.join('images/model_test', file), target_size=(32, 32))
+        img = np.expand_dims(img, axis=0)
+        result=loaded_model.predict_classes(img)
+        print('File: {} -- Prediction: {}'.format(file, class_names[result[0]]))
+
+
+## Create a basic model instance
+#model = create_model()
 # Create a basic model instance
 model = create_model_v4()
 # print(model.summary())
@@ -190,6 +211,7 @@ model = create_model_v4()
 # print("Restored model, accuracy: {:5.2f}%".format(100*acc))
 # print(model.input_names)
 
+## Load the weights from a saved model
 #model.load_weights(checkpoint_path)
 # model.save('training/cifar10_model_v4.h5')
 

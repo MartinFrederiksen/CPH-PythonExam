@@ -11,6 +11,7 @@ import shutil
 import time
 import cv2
 import os
+from keras.models import load_model
 
 def handle_zip_file(zip_file_path, tolerance=0.62):
     start_time = time.time()
@@ -26,7 +27,10 @@ def handle_zip_file(zip_file_path, tolerance=0.62):
     clean_up_train_folder(unzipped_dist, train_folder)
 
     # Sort images to their dedicated folders depending on face on the image
-    sort_images(unzipped_dist, faces, tolerance)
+    sort_faces(unzipped_dist, faces, tolerance)
+
+    # Sort objects in unknown folder if folder exsists
+    #sort_unknown()
 
     # Zip the file again
     zipped_file = zip_directory(unzipped_dist, config['ZIP_FOLDER'])
@@ -83,7 +87,7 @@ def _train_faces_iteration(args):
     image = cv2.imread(os.path.join(train_folder, filename))
     image = imutils.resize(image, width=500)
     return (fname, frd.face_encodings_data(image)[0])
-
+    
 def clean_up_train_folder(dist, train_folder):
     for image in os.listdir(train_folder):
         shutil.move(os.path.join(train_folder, image), dist)
@@ -95,12 +99,12 @@ def create_face_folders(dist, faces):
     for face in tqdm(faces):
         os.makedirs(os.path.join(dist, face))
 
-def sort_images(unzipped_dist, known_name_images, tolerance):
+def sort_faces(unzipped_dist, known_name_images, tolerance):
     print('== Started Sorting of Images ==')
     files = [f for f in os.listdir(unzipped_dist) if os.path.isfile(os.path.join(unzipped_dist, f))]
 
     pool = Pool(cpu_count())
-    sorted_images = _tuple_array_to_dictionary_array(list(tqdm(pool.imap(_sort_images_itteration, [(f, unzipped_dist, known_name_images, tolerance) for f in files]), total=len(files))))
+    sorted_images = _tuple_array_to_dictionary_array(list(tqdm(pool.imap(_sort_faces_itteration, [(f, unzipped_dist, known_name_images, tolerance) for f in files]), total=len(files))))
     pool.close()
     pool.join()
 
@@ -108,7 +112,7 @@ def sort_images(unzipped_dist, known_name_images, tolerance):
     create_face_folders(unzipped_dist, sorted_images)
     _copy_files_from_root(unzipped_dist, sorted_images)
 
-def _sort_images_itteration(args):
+def _sort_faces_itteration(args):
     filename, unzipped_dist, known_name_images, tolerance = args
 
     if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
@@ -153,6 +157,18 @@ def _tuple_array_to_dictionary(tuple_array):
     for a, b in tuple_array:
         di[a] = b
     return di
+
+# def sort_unknown():
+#    if os.path.isdir(fpath)
+    
+#     loaded_model = load_model('training/cifar10_model_v1.h5')
+#     files = os.listdir('images/model_test')
+#     for file in files:
+#         img = image.load_img(os.path.join('images/model_test', file), target_size=(32, 32))
+#         img = np.expand_dims(img, axis=0)
+#         result=loaded_model.predict_classes(img)
+#         print('File: {} -- Prediction: {}'.format(file, class_names[result[0]]))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A program that takes a zip file and sorts it by faces on images')
