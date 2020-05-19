@@ -206,4 +206,4 @@ $RECYCLE.BIN/
 zipped/*
 uploads/*
 unzip/*
-static/*
+static/unzipped/*
