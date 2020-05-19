@@ -36,7 +36,7 @@ x_train = x_train / 255.0
 x_test = x_test / 255.0
 
 # One-hot encoding based on number of classes
-# class_count = 10
+class_count = 10
 # y_train = np_utils.to_categorical(y_train, class_count)
 # y_test = np_utils.to_categorical(y_test, class_count)
 # checkpoint_path = "training/cp_v1.ckpt"
