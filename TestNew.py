@@ -1,10 +1,12 @@
 import os
 
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
+from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, BatchNormalization
 
 from keras.optimizers import adam
 from keras.callbacks import Callback, ModelCheckpoint
+
+from keras.constraints import maxnorm
 
 from keras.utils import np_utils # Transfrom labels to categorical
 from keras.datasets import cifar10 # To load the dataset
@@ -19,6 +21,8 @@ K.set_image_dim_ordering('tf') # Tell TensorFlow the right order of dims
 import matplotlib as mpl
 mpl.style.use('classic')
 
+import numpy as np
+
 
 from keras.preprocessing import image
 
@@ -32,11 +36,17 @@ x_train = x_train / 255.0
 x_test = x_test / 255.0
 
 # One-hot encoding based on number of classes
-class_count = 10
-y_train = np_utils.to_categorical(y_train, class_count)
-y_test = np_utils.to_categorical(y_test, class_count)
+# class_count = 10
+# y_train = np_utils.to_categorical(y_train, class_count)
+# y_test = np_utils.to_categorical(y_test, class_count)
+# checkpoint_path = "training/cp_v1.ckpt"
 
-checkpoint_path = "training/cp_v1.ckpt"
+nClasses = 10
+y_train = np_utils.to_categorical(y_train)
+y_test = np_utils.to_categorical(y_test)
+class_num = y_test.shape[1]
+
+checkpoint_path = "training/cp_v4.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
 
 
@@ -59,6 +69,10 @@ def create_model():
     model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
+
+    model.add(Conv2D(512, (3, 3), padding='same', activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.4))
     
     # From 3D to 1D array
     model.add(Flatten())
@@ -73,12 +87,54 @@ def create_model():
 
     return model
 
+def create_model_v4():
+    model = Sequential()
+
+    model.add(Conv2D(32, (3, 3), input_shape=(32, 32, 3), padding='same', activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.2))
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.2))
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(128, (3, 3), padding='same', activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(BatchNormalization())
+
+    model.add(Flatten())
+    model.add(Dropout(0.2))
+
+    model.add(Dense(256, activation='relu', kernel_constraint=maxnorm(3)))
+    model.add(Dropout(0.2))
+    model.add(BatchNormalization())
+        
+    model.add(Dense(128, activation='relu', kernel_constraint=maxnorm(3)))
+    model.add(Dropout(0.2))
+    model.add(BatchNormalization())
+
+    model.add(Dense(class_num , activation='softmax'))  
+
+    # Optimizer loss - klassifikation
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+    return model
+
+
 def fit_model(model):
     # Create a callback that saves the model's weights
     cp_callback = ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, verbose=1)
 
+    np.random.seed(21)
+
     # Train the model with the new callback
-    history = model.fit(x_train, y_train, batch_size=200, epochs=50, #verbose=0,
+    history = model.fit(x_train, y_train, batch_size=64, epochs=25, #verbose=0,
             validation_data=(x_test, y_test),
             callbacks=[cp_callback])  # Pass callback to training
     
@@ -138,6 +194,9 @@ def sort_unknown():
 
 ## Create a basic model instance
 #model = create_model()
+# Create a basic model instance
+model = create_model_v4()
+print(model.summary())
 
 ## Display the model's architecture
 # model.summary()
@@ -150,13 +209,13 @@ def sort_unknown():
 
 ## Load the weights from a saved model
 #model.load_weights(checkpoint_path)
+model.save('training/cifar10_model_v4.h5')
 
-
-# loaded_model = load_model('training/cifar10_model_v1.h5')
-# #loaded_model.layers[0].input_shape #(None, 32, 32, 3)
-# image_path='images/model_test/SquareDoggo.jpg'
-# IMG_SIZE = 32
-# img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
-# img = np.expand_dims(img, axis=0)
-# result=loaded_model.predict_classes(img)
-# print(class_names[result[0]])
+loaded_model = load_model('training/cifar10_model_v4.h5')
+#loaded_model.layers[0].input_shape #(None, 32, 32, 3)
+image_path='images/model_test/Deer.jpg'
+IMG_SIZE = 32
+img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
+img = np.expand_dims(img, axis=0)
+result=loaded_model.predict_classes(img)
+print(class_names[result[0]])
