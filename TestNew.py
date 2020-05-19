@@ -175,27 +175,27 @@ def make_plots(history):
 
 # Create a basic model instance
 model = create_model_v4()
-print(model.summary())
+# print(model.summary())
 
 ## Display the model's architecture
 # model.summary()
 
 # Fit the model
-history = fit_model(model)
-make_plots(history)
+# history = fit_model(model)
+# make_plots(history)
 
 # Load the weights and evaluate the model
-model.load_weights(checkpoint_path)
-loss, acc = model.evaluate(x_test,  y_test, verbose=2)
-print("Restored model, accuracy: {:5.2f}%".format(100*acc))
+# model.load_weights(checkpoint_path)
+# loss, acc = model.evaluate(x_test,  y_test, verbose=2)
+# print("Restored model, accuracy: {:5.2f}%".format(100*acc))
 # print(model.input_names)
 
 #model.load_weights(checkpoint_path)
-model.save('training/cifar10_model_v4.h5')
+# model.save('training/cifar10_model_v4.h5')
 
 loaded_model = load_model('training/cifar10_model_v4.h5')
 #loaded_model.layers[0].input_shape #(None, 32, 32, 3)
-image_path='images/model_test/Deer.jpg'
+image_path='images/model_test/Airplane.jpg'
 IMG_SIZE = 32
 img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
 img = np.expand_dims(img, axis=0)
