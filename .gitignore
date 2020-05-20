@@ -207,3 +207,4 @@ zipped/*
 uploads/*
 unzip/*
 static/unzipped/*
+cifar10/*

@@ -15,6 +15,7 @@ def index():
 def upload_file():
     f = request.files['file']
     tolerance = float(request.form['tolerance'])
+    model = request.form['model']
 
     filename = secure_filename(f.filename)
     filename = file_handeling.filename_check(config['UPLOAD_FOLDER'], filename)
@@ -22,7 +23,7 @@ def upload_file():
     path = os.path.join(config['UPLOAD_FOLDER'], filename)
     f.save(path)
 
-    zipped_file, unzipped_dist = file_handeling.handle_zip_file(path, tolerance=tolerance)
+    zipped_file, unzipped_dist = file_handeling.handle_zip_file(path, tolerance=tolerance, model=model)
 
     information = {
         "originalName" : path.split('/')[-1],
@@ -49,4 +50,4 @@ def download_zip():
         abort(404)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug = True)
+    app.run(host="0.0.0.0", port=5000, debug = False)

@@ -28,6 +28,7 @@ from keras.preprocessing import image
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+
 class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck']
 
@@ -46,22 +47,14 @@ y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
 class_num = y_test.shape[1]
 
-checkpoint_path = "training/cp_v4.ckpt"
+checkpoint_path = "training/cp_v5.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
 
 
 def create_model():
     model = Sequential()
-    # Convolution layer with 32 kernels
     model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(32, 32, 3)))
     model.add(Conv2D(32, (3, 3), activation='relu'))
-    # 
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    # Adds randomness by randomly setting elemnts to zero to prevent overfitting
-    model.add(Dropout(0.4))
-
-    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
 
@@ -70,20 +63,15 @@ def create_model():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
 
-    model.add(Conv2D(512, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
-    
-    # From 3D to 1D array
+
     model.add(Flatten())
-    # Dense NN
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(class_count, activation='softmax'))
-
-
-    # Optimizer loss - klassifikation
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.add(Dense(nClasses, activation='softmax'))
 
     return model
 
@@ -169,7 +157,7 @@ def make_plots(history):
     plt.xlabel('Epochs', fontsize=16)
     plt.xlabel('Loss', fontsize=16)
     plt.title('Loss curve', fontsize=16)
-    plt.savefig('figures/loss.png', bbox_inches='tight', dpi=300)
+    plt.savefig('figures/loss_v5.png', bbox_inches='tight', dpi=300)
 
     # Accuracy curve
     plt.figure(figsize=[8, 6])
@@ -179,7 +167,7 @@ def make_plots(history):
     plt.xlabel('Epochs', fontsize=16)
     plt.xlabel('Accuracy', fontsize=16)
     plt.title('Accuracy curve', fontsize=16)
-    plt.savefig('figures/accuracy.png', bbox_inches='tight', dpi=300)
+    plt.savefig('figures/accuracy_v5.png', bbox_inches='tight', dpi=300)
 
 
 def sort_unknown():
@@ -202,22 +190,22 @@ model = create_model_v4()
 # model.summary()
 
 # Fit the model
-# history = fit_model(model)
-# make_plots(history)
+history = fit_model(model)
+make_plots(history)
 
 # Load the weights and evaluate the model
-# model.load_weights(checkpoint_path)
-# loss, acc = model.evaluate(x_test,  y_test, verbose=2)
-# print("Restored model, accuracy: {:5.2f}%".format(100*acc))
+model.load_weights(checkpoint_path)
+loss, acc = model.evaluate(x_test,  y_test, verbose=2)
+print("Restored model, accuracy: {:5.2f}%".format(100*acc))
 # print(model.input_names)
 
 ## Load the weights from a saved model
 #model.load_weights(checkpoint_path)
-# model.save('training/cifar10_model_v4.h5')
+model.save('training/cifar10_model_v5.h5')
 
-loaded_model = load_model('training/cifar10_model_v4.h5')
+loaded_model = load_model('training/cifar10_model_v5.h5')
 #loaded_model.layers[0].input_shape #(None, 32, 32, 3)
-image_path='images/model_test/Airplane.jpg'
+image_path='images/model_test/Doog.png'
 IMG_SIZE = 32
 img = image.load_img(image_path, target_size=(IMG_SIZE, IMG_SIZE))
 img = np.expand_dims(img, axis=0)
