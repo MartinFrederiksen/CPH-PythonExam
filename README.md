@@ -5,7 +5,7 @@
 I dette projekt vil vi gerne udarbejde en hjemmeside via flask, hvor det er muligt at uploade en zip fil.
 Denne zip fil skal indeholde de ting, som står under brugsanvisningen.
 
-Det skal så være muligt for vores hjemmeside at sortere denne mappe vha. deep learning og convolutional neural network hvorefter mappen bliver zippet igen og bliver downloadet til din egen desktop.
+Det skal så være muligt for vores hjemmeside at sortere denne zip fil vha. deep learning og convolutional neural network hvorefter mappen bliver zippet igen og bliver downloadet til din egen desktop.
 
 ***Hvis vi har mere tid:***
  - Deep learning skal kunne genkende objekter som fx kat, hund, bil, fly.
@@ -32,8 +32,8 @@ Det skal så være muligt for vores hjemmeside at sortere denne mappe vha. deep 
     - Multiple folders called Train
     - Gif, png, jpg
 - Data processing
-    - Model fitting(image downscale)??
-    - Features i ansigt??
+    - Model fitting(image downscale)
+    - Features i ansigt
 - Presentation
     - Flask server
 
