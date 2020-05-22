@@ -36,17 +36,6 @@ Vi vil sortere på:
 |[shape_predictor_68_face_landmarks](https://github.com/davisking/dlib-models)|
 |[cifar10](https://www.cs.toronto.edu/~kriz/cifar.html)|
 
-## Teknologier brugt:
-- Python
-- Flask
-- Numpy
-- dlib
-- OpenCV4
-- Convolution Neural Network
-- MySQL
-- Zipfile
-- DigitalOcean
-
 ## Udfordringer:
 - Data collection
     - User input(zip file)
