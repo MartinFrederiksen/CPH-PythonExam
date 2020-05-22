@@ -8,7 +8,6 @@ import numpy as np
 import argparse
 import imutils
 import zipfile
-import tarfile
 import shutil
 import time
 import cv2
