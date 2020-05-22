@@ -90,7 +90,7 @@ def create_model_v4():
     model.add(Dropout(0.2))
     model.add(BatchNormalization())
 
-    model.add(Dense(class_num , activation='softmax'))  
+    model.add(Dense(class_count , activation='softmax'))  
 
     # Optimizer loss - klassifikation
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
