@@ -9,7 +9,7 @@
 I dette projekt vil vi gerne udarbejde en hjemmeside via flask, hvor det er muligt at uploade en zip fil.
 Denne zip fil skal indeholde de ting, som står under brugsanvisningen.
 
-Det skal så være muligt for vores hjemmeside at sortere denne mappe vha. deep learning og convolutional neural network hvorefter mappen bliver zippet igen og bliver downloadet til din egen desktop.
+Det skal så være muligt for vores hjemmeside at sortere denne zip fil vha. deep learning og convolutional neural network hvorefter mappen bliver zippet igen og bliver downloadet til din egen desktop.
 
 Vi vil sortere på:
  - Deep learning, shape predictor ansigtsgenkendelse, kunne kende forskel på personer på billeder
