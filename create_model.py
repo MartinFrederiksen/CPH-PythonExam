@@ -4,13 +4,13 @@ from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, BatchNor
 from keras.optimizers import adam
 from keras.callbacks import Callback, ModelCheckpoint
 from keras.constraints import maxnorm
-from keras.utils import np_utils # Transfrom labels to categorical
-from keras.datasets import cifar10 # To load the dataset
+from keras.utils import np_utils # Transfrom labels to categorical.
+from keras.datasets import cifar10 # To load the dataset.
 import numpy as np
 import matplotlib.pyplot as plt
 import keras.backend.common as K
-K.set_image_dim_ordering('tf') # Tell TensorFlow the right order of dims
-import matplotlib as mpl # Just to set some standard plot format
+K.set_image_dim_ordering('tf') # Tell TensorFlow the right order of dims.
+import matplotlib as mpl # Just to set some standard plot format.
 mpl.style.use('classic')
 import numpy as np
 import argparse
@@ -22,20 +22,25 @@ from keras.preprocessing import image
 class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck']
 
-# Normalize the x_train and x_test to be a float between 0 and 1
+# Normalize the x_train and x_test to be a float between 0 and 1.
 x_train = x_train / 255.0
 x_test = x_test / 255.0
 
-# One-hot encoding based on number of classes
+# One-hot encoding based on number of classes.
 class_count = 10
 y_train = np_utils.to_categorical(y_train, class_count)
 y_test = np_utils.to_categorical(y_test, class_count)
 
 def create_model():
+    # Sequential model adds layer by layer.
     model = Sequential()
+    # First perfrom convolution then add relu activation function.
+    # Padding - Same/valid - same adds n-pixel border of 0-pixels to remove data loss.
     model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(32, 32, 3)))
     model.add(Conv2D(32, (3, 3), activation='relu'))
+    # Halves the image size because stride = pool_size.
     model.add(MaxPooling2D(pool_size=(2, 2)))
+    # Prevent overfitting.
     model.add(Dropout(0.4))
 
     model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
@@ -48,7 +53,9 @@ def create_model():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.4))
 
+    # Converts matrix to single array.
     model.add(Flatten())
+    # The nn with 512 neurons in the first hidden layer
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(class_count, activation='softmax'))
